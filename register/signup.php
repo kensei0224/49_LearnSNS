@@ -18,15 +18,30 @@ if (!empty($_POST)){
         $errors['name'] = 'blank';
     }
 if ($email == ''){
-    $errors['email'] = 'blank;'
+    $errors['email'] = 'blank';
 }
 if($password== ''){
-    $errors['password'] = 'blank;'
+    $errors['password'] = 'blank';
 
+$count = strlen($password);
+if ($password == ''){
+    $errors['password'] = 'blank';
+}elseif ($count < 4 || 16 < $count){
+    // ||演算子を使って４文字未満またわ１６文字より多い場合エラー
+    $errors['password'] = 'length';
 }
 
+// $FILES[キー]['name']; 画像
+// $_FILES[キー]['tmp_name']; ファイルデータそのもの
+$file_name = $_FILES['input_img_name']['name'];
+if (!empty($file_name)){
 
+}else{
+    $errors['img_name'] = 'blank';
+}
 
+}
+}
 
 
 ?>
@@ -48,9 +63,15 @@ if($password== ''){
                     まずformタグのmethodとactionを確認
                     signip.phpでバリエーテーションをするので
                     signup.phpの書き換える
+                 
+                ファイルをアップデートする際の必須ルール
+                １。POST送信であること
+                ２.円ctyぺ属性にmultipart・form＝だたが設定されていること
+
                  -->
 
-                <form method="POST" action="signup.php" enctype="signup.php/form-data">
+                <form method="POST" action="signup.php" enctype="multipart/form-data">
+                    
                     <div class="form-group">
                         <label for="name">ユーザー名</label>
                         <!-- 
@@ -66,22 +87,35 @@ if($password== ''){
                     </div>
                     <div class="form-group">
                         <label for="email">メールアドレス</label>
-                        <?php if (isset($errors['email']) && $errors['email'] == 'blank'):
-                            ?>
-                            <p class="text-danger">パスワードを入力してください</p>
-                        <?php endif; ?>
 
 
                         <input type="email" name="input_email" class="form-control" id="email" placeholder="example@gmail.com"
                             value="">
+                        <?php if (isset($errors['email']) && $errors['email'] == 'blank'):
+                            ?>
+                            <p class="text-danger">メールアドレスを入力してください</p>
+                        <?php endif; ?>
                     </div>
                     <div class="form-group">
                         <label for="password">パスワード</label>
                         <input type="password" name="input_password" class="form-control" id="password" placeholder="4 ~ 16文字のパスワード">
+                    <?php if (isset($errors['password']) && $errors['password'] == 'blank'): ?>
+                        <P class="text-danger">パスワードを入力してください</p>
+                     <?php endif; ?>
+                    <?php if (isset($errors['pasword']) && $errors['pasword'] == 'length'): ?>
+                        <p class="text-danger">
+                    パスワードは4~16文字以内で入力してください</p>
+                    <?php endif; ?>
                     </div>
                     <div class="form-group">
                         <label for="img_name">プロフィール画像</label>
                         <input type="file" name="input_img_name" id="img_name" accept="image/*">
+                    <?php if(isset($errors['img_name']) && $errors['img_name'] == 'blank'):
+                    ?>
+
+                    <p class = "text-danger">
+                    画像を選択してください</p>
+                <?php endif; ?>
                     </div>
                     <input type="submit" class="btn btn-default" value="確認">
                     <span style="float: right; padding-top: 6px;">ログインは
