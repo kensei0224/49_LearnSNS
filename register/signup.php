@@ -1,4 +1,8 @@
 <?php
+session_start();
+// セッションを利用するためのルール
+//phpファイルの先頭に書くこと
+
 //1エラーだった場合になんのエラーだったか保持する$errorsを定義
 //2送信されたデータと空文字を比較
 //3一致する場合は$errorsにnameをキーにblankという値
@@ -17,49 +21,88 @@ if (!empty($_POST)){
 //3 ユーザー名が空である、とゆう情報を
         $errors['name'] = 'blank';
     }
-if ($email == ''){
-    $errors['email'] = 'blank';
+
+
+    if ($email == ''){
+        $errors['email'] = 'blank';
+    }
+    if($password== ''){
+        $errors['password'] = 'blank';
+
+        $count = strlen($password);
+        if ($password == ''){
+            $errors['password'] = 'blank';
+        }elseif ($count < 4 || 16 < $count){
+            // ||演算子を使って４文字未満またわ１６文字より多い場合エラー
+            $errors['password'] = 'length';
+        }
+    }
+
+    // $FILES[キー]['name']; 画像
+    // $_FILES[キー]['tmp_name']; ファイルデータそのもの
+    $file_name = $_FILES['input_img_name']['name'];
+    if (!empty($file_name)){
+        //ファイル処理
+
+        //拡張子チェックの流れ
+        //1.画像ファイルの拡張子を取得
+        //2.大文字わ小文字に変換
+        //3.jpg,png,gifと比較する
+        //4.いずれにも当てはまらない場合はエラー
+
+        // substr(文字列、何文字目から取得化指定)
+
+        $file_type = substr($file_name, -3);
+
+        $file_type = strtolower($file_type);
+
+        if($file_type != 'jpg' && $file_type != 'png' && $file_type != 'gif') {
+            $errors['img_name'] ='type';
+        }
+
+    }else{
+        $errors['img_name'] = 'blank';
+    }
+
+    //エラーがなかった場合
+    if(empty($errors)){
+        //ファイルアップロードの処理
+        //1.フォルダの権限設定
+        //2.一意のファイル名作成
+        //3.アップロード
+
+        // 一位のファイル名作成
+        //2.現在の時刻を作成
+        $date_str = date('YmdHis');
+        //YmdHisは取得フォーマット
+        $submit_file_name = $date_str . $file_name;
+
+        //画像のアップロード
+        //move_uploaded_file(ファイル、アップロード先)
+        //../は一個上ノフォルダに戻る、という意味
+        move_uploaded_file($_FILES['input_img_name']['tmp_name'],
+        '../user_profile_img/' . $submit_file_name);
+        // $SESSON
+        // セッションは各サーバーの
+        //連想配列で値を保持する
+        $_SESSION['49_LearnSNS']['name'] = $_POST['input_name'];
+        $_SESSION['49_LearnSNS']['email'] = $_POST['input_email'];
+        $_SESSION['49_LearnSNS']['password'] = $_POST['input_password'];
+        $_SESSION['49_LearnSNS']['img_name'] = $submit_file_name;
+        
+        
+
+        // check.phpへの移動
+        // header('Locatipn: 移動先')
+        header('Location: check.php');
+        exit();
+
+    }
+
 }
-if($password== ''){
-    $errors['password'] = 'blank';
-
-$count = strlen($password);
-if ($password == ''){
-    $errors['password'] = 'blank';
-}elseif ($count < 4 || 16 < $count){
-    // ||演算子を使って４文字未満またわ１６文字より多い場合エラー
-    $errors['password'] = 'length';
-}
-
-// $FILES[キー]['name']; 画像
-// $_FILES[キー]['tmp_name']; ファイルデータそのもの
-$file_name = $_FILES['input_img_name']['name'];
-if (!empty($file_name)){
-//ファイル処理
-
-//拡張子チェックの流れ
-//1.画像ファイルの拡張子を取得
-//2.大文字わ小文字に変換
-//3.jpg,png,gifと比較する
-//4.いずれにも当てはまらない場合はエラー
-
-// substr(文字列、何文字目から取得化指定)
-
-$file_type = substr($file_name, -3);
-
-$file_type = strtolower($file_type);
-
-if($file_type != 'jpg' && $file_type != 'png' && $file_type != 'gif') {
-    $errors['img_name'] ='type';
-}
-
-}else{
-    $errors['img_name'] = 'blank';
-}
-
-}
-}
-
+Echo '<pre>';
+var_dump($errors);
+Echo '</pre>';
 
 ?>
 <!DOCTYPE html>
