@@ -3,6 +3,18 @@ session_start();
 // セッションを利用するためのルール
 //phpファイルの先頭に書くこと
 
+//check.phpから戻ってきたときの処理
+
+if (isset($_GET['action']) && ['action'] == 'rewrite'){
+      //$_POSTに擬似的に値を代入する
+     // バリエーションを働かすために
+     $_POST['input_name'] = $_SESSION['49_LearnSNS']['name'];
+     $_POST['input_email'] = $_SESSION['49_LearnSNS']['email'];
+     $_POST['input_password'] = $_SESSION['49_LearnSNS']['password'];
+     // $errorsがからの場合、check．phpへ再遷移してしまう
+     $errors['rewrite'] = true;
+}
+
 //1エラーだった場合になんのエラーだったか保持する$errorsを定義
 //2送信されたデータと空文字を比較
 //3一致する場合は$errorsにnameをキーにblankという値
@@ -18,7 +30,7 @@ if (!empty($_POST)){
     $email = $_POST['input_email'];
     $password = $POST['input_password'];
     if ($_name )
-        if ($name) == ''{
+        if ($name == ''){
 //3 ユーザー名が空である、とゆう情報を
             $errors['name'] = 'blank';
 }
@@ -26,23 +38,26 @@ if (!empty($_POST)){
 if($email == ''){
     $email['email'] = 'blank';
 }
-if($password) == ''{
-    $errors['password'] = 'blank'
+if($password == ''){
+    $errors['password'] = 'blank';
 }
 
 $count = strlen($password);
 if ($password =- ''){
-    $errors['password'] 
-}
+    $errors['password'];
+
 
             // ||演算子を使って４文字未満またわ１６文字より多い場合エラー
             $errors['password'] = 'length';
-        }_
-    }
+        }
+
 
     // $FILES[キー]['name']; 画像
     // $_FILES[キー]['tmp_name']; ファイルデータそのもの
-    $file_name = $_FILES['input_img_name']['name'];
+    $file_name = '';
+   if (!isset($_GET['action'])){
+    $file_name = $FILES['input_img_name']['name'];
+   }
     if (!empty($file_name)){
         //ファイル処理
 
@@ -182,6 +197,9 @@ Echo '</pre>';
             
 
             <?php if (isset($errors['img_name']) && $errors['img_name'] == 'type'):
+
+
+
 ?>
                 <p class="text-danger">
                 拡張子がjpg,png,gifの画像を選択してください</p>

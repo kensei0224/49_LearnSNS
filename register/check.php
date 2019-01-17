@@ -1,8 +1,13 @@
 <?php
 session_start();
-echo '<pre>';
-var_dump($_SESSION);
-echo'</pre>';
+
+// 49_LearnSNSセッションがからの場合、sigup.phpに強制に遷移
+if(!isset($_SESSION['49_LearnSNS'])) {
+// singup.phpへの遷移処理
+    header('Location: signup.php');
+// exit()以降ん処理わすべて行われない
+exit();
+}
 
 $name = $_SESSION['49_LearnSNS']['name'];
 $email = $_SESSION['49_LearnSNS']['email'];
