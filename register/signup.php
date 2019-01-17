@@ -16,26 +16,28 @@ if (!empty($_POST)){
     // 2から文字かどうか
     $name = $_POST['input_name'];
     $email = $_POST['input_email'];
-    $password = $_POST['input_password'];
-    if ($name == ''){
+    $password = $POST['input_password'];
+    if ($_name )
+        if ($name) == ''{
 //3 ユーザー名が空である、とゆう情報を
-        $errors['name'] = 'blank';
-    }
+            $errors['name'] = 'blank';
+}
 
+if($email == ''){
+    $email['email'] = 'blank';
+}
+if($password) == ''{
+    $errors['password'] = 'blank'
+}
 
-    if ($email == ''){
-        $errors['email'] = 'blank';
-    }
-    if($password== ''){
-        $errors['password'] = 'blank';
+$count = strlen($password);
+if ($password =- ''){
+    $errors['password'] 
+}
 
-        $count = strlen($password);
-        if ($password == ''){
-            $errors['password'] = 'blank';
-        }elseif ($count < 4 || 16 < $count){
             // ||演算子を使って４文字未満またわ１６文字より多い場合エラー
             $errors['password'] = 'length';
-        }
+        }_
     }
 
     // $FILES[キー]['name']; 画像
@@ -87,7 +89,8 @@ if (!empty($_POST)){
         //連想配列で値を保持する
         $_SESSION['49_LearnSNS']['name'] = $_POST['input_name'];
         $_SESSION['49_LearnSNS']['email'] = $_POST['input_email'];
-        $_SESSION['49_LearnSNS']['password'] = $_POST['input_password'];
+        $_SESSION['49_LearnSNS']['password'] = $_POST['
+        input_password'];
         $_SESSION['49_LearnSNS']['img_name'] = $submit_file_name;
         
         
@@ -126,7 +129,7 @@ Echo '</pre>';
                  
                 ファイルをアップデートする際の必須ルール
                 １。POST送信であること
-                ２.円ctyぺ属性にmultipart・form＝だたが設定されていること
+                ２.enctype属性にmultipart・form＝だたが設定されていること
 
                  -->
 
