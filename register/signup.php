@@ -3,9 +3,11 @@ session_start();
 // セッションを利用するためのルール
 //phpファイルの先頭に書くこと
 
+//1errorsの定義
+$errors = [];
 //check.phpから戻ってきたときの処理
 
-if (isset($_GET['action']) && ['action'] == 'rewrite'){
+if (isset($_GET['action']) && $_GET['action'] == 'rewrite'){
       //$_POSTに擬似的に値を代入する
      // バリエーションを働かすために
      $_POST['input_name'] = $_SESSION['49_LearnSNS']['name'];
@@ -20,16 +22,15 @@ if (isset($_GET['action']) && ['action'] == 'rewrite'){
 //3一致する場合は$errorsにnameをキーにblankという値
 //4エラーがある場合エラーメッセージを表示
 
-//1errorsの定義
-$errors = [];
 
+$name = '';
+$email = '';
 // POSTがどうか
 if (!empty($_POST)){
     // 2から文字かどうか
     $name = $_POST['input_name'];
     $email = $_POST['input_email'];
-    $password = $POST['input_password'];
-    if ($_name )
+    $password = $_POST['input_password'];
         if ($name == ''){
 //3 ユーザー名が空である、とゆう情報を
             $errors['name'] = 'blank';
@@ -56,7 +57,7 @@ if ($password =- ''){
     // $_FILES[キー]['tmp_name']; ファイルデータそのもの
     $file_name = '';
    if (!isset($_GET['action'])){
-    $file_name = $FILES['input_img_name']['name'];
+    $file_name = $_FILES['input_img_name']['name'];
    }
     if (!empty($file_name)){
         //ファイル処理
@@ -157,7 +158,9 @@ Echo '</pre>';
 
                          -->
                         <input type="text" name="input_name" class="form-control" id="name" placeholder="山田 太郎"
-                            value="">
+                            value="<?php echo htmlspecialchars($name);?>">
+                        
+
                             <?php if (isset($errors['name'])&& $errors['name'] == 'blank'):
                             ?>
                             <p class="text-danger">ユーザー名を入力してください</p>
@@ -168,7 +171,7 @@ Echo '</pre>';
 
 
                         <input type="email" name="input_email" class="form-control" id="email" placeholder="example@gmail.com"
-                            value="">
+                            value="<?php echo htmlspecialchars($email);?>">
                         <?php if (isset($errors['email']) && $errors['email'] == 'blank'):
                             ?>
                             <p class="text-danger">メールアドレスを入力してください</p>
@@ -177,13 +180,19 @@ Echo '</pre>';
                     <div class="form-group">
                         <label for="password">パスワード</label>
                         <input type="password" name="input_password" class="form-control" id="password" placeholder="4 ~ 16文字のパスワード">
-                    <?php if (isset($errors['password']) && $errors['password'] == 'blank'): ?>
-                        <P class="text-danger">パスワードを入力してください</p>
-                     <?php endif; ?>
+                    
+
+                    <?php if(!empty($errors) && isset($errors['rewrite'])): ?>
+                        <P class="text-danger">パスワードを再度入力してください</P>
+                    <?php endif; ?>
                     <?php if (isset($errors['pasword']) && $errors['pasword'] == 'length'): ?>
                         <p class="text-danger">
                     パスワードは4~16文字以内で入力してください</p>
                     <?php endif; ?>
+                        
+                    <?php if (isset($errors['password']) && $errors['password'] == 'blank'): ?>
+                        <P class="text-danger">パスワードを入力してください</p>
+                     <?php endif; ?>
                     </div>
                     <div class="form-group">
                         <label for="img_name">プロフィール画像</label>
