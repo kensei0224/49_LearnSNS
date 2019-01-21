@@ -1,16 +1,49 @@
 <?php
-
+session_start();
+require('dbconnect.php');
 $errors = [];
 if (!empty($_POST)) {
     $email = $_POST['input_email'];
     $password = $_POST['input_password'];
     if ($email != '' && $password != ''){
+        //正常系
         //両方入力されている時
         //データベースとの照合処理
+        
 
-}else{
-    $errors['signin'] = 'blank';
-}
+        // 1入力されたメールアドレス「と」一致する登録データを1件DB から取得する
+        $sql = 'SELECT* FROM `users` WHERE `email` = ?';
+        $data = [$email];
+        $stmt = $dbh->prepare($sql);
+        $stmt->execute($data);
+        //$recordはDBの１レコードのあた胃にする
+        //形式は連想配列
+        //クーはカラムに依存する
+        $record = $stmt->fetch(PDO::FETCH_ASSOC);
+
+
+        
+
+        if($record == false){
+            $errors['signin'] = 'failed';
+        }
+        //認証成功
+        //3セッションにユーザーのIDを格納
+        $_SESSION['49_LearnSNS']['id'] = $record['id'];
+
+        //4タイムライン画面に遷移
+        header('location: timeline.php');
+        exit();
+
+        if(password_verify($password,$record['password'])){
+        }else{
+            //認証失敗
+            $errors['signin'] = 'failed';
+        }
+
+    }else{
+        $errors['signin'] = 'blank';
+    }
 }
 
 
@@ -30,6 +63,12 @@ if (!empty($_POST)) {
                             <p class="
                             text-danger">メールアドレスとパスワードを正しく入力してください</p>
                         <?php endif; ?>
+
+                        <?php if(isset($errors['signin']) && $errors['signin'] == 'failed'): ?>
+                            <p class="
+                            text-danger">サインインに失敗しました</p>
+                        <?php endif; ?>
+
                     </div>
                     <div class="form-group">
                         <label for="password">パスワード</label>
