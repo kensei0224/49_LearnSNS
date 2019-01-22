@@ -1,6 +1,35 @@
 <?php
 
+session_start();
+require('dbconnect.php');
+
+$sql = 'SELECT * FROM `users` WHERE `id` = ?';
+$data = [$_SESSION['49_LearnSNS']['id']];
+$stmt = $dbh->prepare($sql);
+$stmt->execute($data);
+
+$signin_user = $stmt->fetch(PDO:: FETCH_ASSOC);
+
+//->アロー演算子
+//インスタンスのマンバメソットを呼び出す
+echo'<pre>';
+var_dump($signin_user);
+echo '</pre>';
+
 ?>
+
+<!--
+includ(ファイル名)
+指定されたファイルが指定された箇所に読み込まれる
+Webサービス内で共通するような場所は他のファイル
+で、定義をして、様々なページから利用可能にすべき
+
+inclubeとrequireの違い
+プログラム記載にミスがある場合
+requireはエラー
+inclubeは警告
+ -->
+
 <?php include('layouts/header.php'); ?>
 <body style="margin-top: 60px; background: #E4E6EB;">
     <?php include('navbar.php'); ?>
