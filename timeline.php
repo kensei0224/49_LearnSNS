@@ -3,6 +3,13 @@
 session_start();
 require('dbconnect.php');
 
+//サインインしてなければ
+if (!isset($_SESSION['49_LearnSNS']['id'])){
+//signin_phpへ強制遷移
+header('Location:signin.php');
+exit();
+}
+
 $sql = 'SELECT * FROM `users` WHERE `id` = ?';
 $data = [$_SESSION['49_LearnSNS']['id']];
 $stmt = $dbh->prepare($sql);
