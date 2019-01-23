@@ -3,6 +3,13 @@
 session_start();
 require('dbconnect.php');
 
+//サインインしてなければ
+if (!isset($_SESSION['49_LearnSNS']['id'])){
+     //signin_phpへ強制遷移
+    header('Location:signin.php');
+    exit();
+}
+
 $sql = 'SELECT * FROM `users` WHERE `id` = ?';
 $data = [$_SESSION['49_LearnSNS']['id']];
 $stmt = $dbh->prepare($sql);
@@ -16,7 +23,27 @@ echo'<pre>';
 var_dump($signin_user);
 echo '</pre>';
 
+//エラーないよを入れておく配列定義
+$errors = [];
+
+//投稿ボタンが押されたら
+// = POST送信だったら
+if (!empty($_POST)){
+    //textareaの値を取り出し
+    //$_POSTのキーはtextareaタグのNAME属性を使う
+    $feed = $_POST['feed'];
+
+    //投稿がからかどうか
+    if ($feed != ''){
+        //投稿処理
+    }else{
+        // エラー
+        //「feed」が「空」というエラーを入れておくこと
+        $errors['feed'] = 'blank';
+    }
+}
 ?>
+
 
 <!--
 includ(ファイル名)
@@ -43,10 +70,16 @@ inclubeは警告
             </div>
             <div class="col-xs-9">
                 <div class="feed_form thumbnail">
+                    <!--  actionがからの時は自分自身にアクセス -->
                     <form method="POST" action="">
                         <div class="form-group">
+                            <!-- textareaha複数行のテキスト
+                            input type="text"は一行 -->
                             <textarea name="feed" class="form-control" rows="3" placeholder="Happy Hacking!" style="font-size: 24px;"></textarea><br>
-                        </div>
+                            <?php if (isset($errors['feed']) &&  $errors['feed'] == 'blank'):?>
+                                <p class = "text-danger"> 投稿データを入力してください </p>
+                        <?php endif; ?>
+                        </div> 
                         <input type="submit" value="投稿する" class="btn btn-primary">
                     </form>
                 </div>
